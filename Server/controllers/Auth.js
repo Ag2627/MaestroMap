@@ -36,6 +36,10 @@ export const signin = async(req,res,next)=>{
             return res.status(400).json({message:"Invalid Password"});
         }
 
+        if (!user.isVerified) {
+            return res.status(400).json({ message: "Please verify your email first" });
+        }
+
         const token = jwt.sign(
             {userid:user._id,email:user.email},
             process.env.JWT_SECRET,
@@ -51,3 +55,4 @@ export const signin = async(req,res,next)=>{
         next(error);
     }
 }
+
