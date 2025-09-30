@@ -1,7 +1,7 @@
 import User from "../models/User.js"
 import { hashPassword, matchPassword } from "../utils/hashPassword.js"
 import jwt from "jsonwebtoken"
-export const signup = async(req,resizeBy,next)=>{
+export const signup = async(req,res,next)=>{
     try{
         const {fullname,email,password} =req.body;
 
@@ -13,7 +13,7 @@ export const signup = async(req,resizeBy,next)=>{
         }
         const hashedPass= await hashPassword(password);
         const user = await User.create({fullname,email,password:hashedPass});
-        resizeBy.status(201).json({
+        res.status(201).json({
             message: "User Registered Successfully",
             user: {id: user._id,fullname:user.fullname,email:user.email}
         });

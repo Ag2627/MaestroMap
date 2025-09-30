@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import './App.css'
-
+import Signup from './components/Signup.jsx';
+import Signin from './components/Signin.jsx';
 function App() {
-  const [count, setCount] = useState(0)
-
+  
   return (
     <>
-    <div>hello</div>
+     <div className="App">
+      <Signin/>
+    </div>
     </>
-  )
+  );
 }
 
 export default App
