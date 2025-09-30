@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import './App.css'
-import Signup from './components/Signup.jsx';
-import Signin from './components/Signin.jsx';
+
+import React from 'react';
+import LandingPage from './components/LandingPage';
+
 function App() {
-  
+  // Placeholder function for the login button
+  const handleLogin = () => {
+    alert('Login button clicked!');
+  };
+
   return (
-    <>
-     <div className="App">
-      <Signin/>
+    <div>
+      <LandingPage onLogin={handleLogin} />
     </div>
-    </>
   );
 }
 
-export default App
+export default App;
