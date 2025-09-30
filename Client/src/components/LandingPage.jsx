@@ -1,28 +1,60 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+
 
 const LandingPage = ({ onLogin }) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+
+  const handleLogout = () => {
+    logout();
+    navigate('/'); // Navigate to the landing page to refresh the state
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
       {/* Header */}
-      <header className="relative z-10 px-6 py-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white font-bold">
-              <i className="fas fa-magic"></i>
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">Ringmaster's Roundtable</h1>
-          </div>
-          <Button 
-            onClick={onLogin}
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 hover:shadow-lg"
-            data-testid="header-login-btn"
-          >
-            <i className="fab fa-google mr-2"></i>
-            Sign In
-          </Button>
-        </div>
-      </header>
+     <header className="relative z-10 px-6 py-6">
+  <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="flex items-center space-x-3">
+      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white font-bold">
+        <i className="fas fa-magic"></i>
+      </div>
+      <h1 className="text-xl font-bold text-gray-900">Ringmaster's Roundtable</h1>
+    </div>
+
+    {/* --- DYNAMIC CONTENT START --- */}
+    {user ? (
+      // If a user is logged in, display their name and a Logout button
+      <div className="flex items-center space-x-4">
+        <span className="font-semibold text-gray-700">Welcome {user.fullname}</span>
+        <Button
+          onClick={handleLogout}
+          className="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:shadow-lg"
+        >
+          Logout
+        </Button>
+      </div>
+    ) : (
+      // If no user is logged in, display the Sign In button
+      <Link to="/signin">
+        <Button 
+          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 hover:shadow-lg"
+          data-testid="header-login-btn"
+        >
+          <i className="fab fa-google mr-2"></i>
+          Sign In
+        </Button>
+      </Link>
+    )}
+    {/* --- DYNAMIC CONTENT END --- */}
+
+  </div>
+</header>
 
       {/* Hero Section */}
       <section className="relative z-10 px-6 py-20">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -6,17 +7,22 @@ const Signup = () => {
     email: '',
     password: '',
   });
-   
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  
+  const [message, setMessage] = useState('');
+  
+  const navigate = useNavigate(); 
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(''); 
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/auth/signup`, {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${apiBaseUrl}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,14 +34,21 @@ const Signup = () => {
 
       if (response.ok) {
         console.log('Signup successful:', data);
-        // You can add logic here to redirect the user or show a success message
+        setMessage('Registration successful! Redirecting to sign-in...');
+        
+
+        setTimeout(() => {
+          navigate('/signin');
+        }, 2000); 
+
       } else {
+      
         console.error('Signup failed:', data.message);
-        // Handle errors, e.g., display an error message to the user
+        setMessage(`Error: ${data.message}`);
       }
     } catch (error) {
       console.error('Error during signup:', error);
-      // Handle network errors or other exceptions
+      setMessage('An unexpected error occurred. Please try again.');
     }
   };
 
@@ -44,11 +57,9 @@ const Signup = () => {
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center">Create Your Account</h2>
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Full Name Input */}
           <div>
-            <label
-              htmlFor="fullname"
-              className="text-sm font-medium text-gray-400"
-            >
+            <label htmlFor="fullname" className="text-sm font-medium text-gray-400">
               Full Name
             </label>
             <input
@@ -61,11 +72,9 @@ const Signup = () => {
               value={formData.fullname}
             />
           </div>
+          {/* Email Input */}
           <div>
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-gray-400"
-            >
+            <label htmlFor="email" className="text-sm font-medium text-gray-400">
               Email address
             </label>
             <input
@@ -79,11 +88,9 @@ const Signup = () => {
               value={formData.email}
             />
           </div>
+          {/* Password Input */}
           <div>
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-400"
-            >
+            <label htmlFor="password" className="text-sm font-medium text-gray-400">
               Password
             </label>
             <input
@@ -97,6 +104,7 @@ const Signup = () => {
               value={formData.password}
             />
           </div>
+          {/* Submit Button */}
           <div>
             <button
               type="submit"
@@ -106,6 +114,18 @@ const Signup = () => {
             </button>
           </div>
         </form>
+        {/* 6. Display success or error messages */}
+        {message && <p className="text-center text-sm text-red-400 mt-4">{message}</p>}
+        
+        {/* 7. Add link to the sign-in page */}
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-400">
+            Already have an account?{' '}
+            <Link to="/signin" className="font-medium text-indigo-400 hover:text-indigo-500">
+              Sign In
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

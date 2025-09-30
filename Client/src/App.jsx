@@ -1,17 +1,18 @@
-
 import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+
+// Import your page components
 import LandingPage from './components/LandingPage';
+import Signup from './components/Signup';
+import Signin from './components/Signin';
 
 function App() {
-  // Placeholder function for the login button
-  const handleLogin = () => {
-    alert('Login button clicked!');
-  };
-
   return (
-    <div>
-      <LandingPage onLogin={handleLogin} />
-    </div>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/signin" element={<Signin />} />
+    </Routes>
   );
 }
 

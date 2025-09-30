@@ -1,63 +1,48 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
+import { Link } from 'react-router-dom';
 const Signin = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  // State for handling messages to the user
-  const [message, setMessage] = useState('');
+const [formData, setFormData] = useState({ email: '', password: '' });
+const [message, setMessage] = useState('');
+const navigate = useNavigate();
+const { login } = useAuth(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  }; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(''); // Clear previous messages
-
+    setMessage('');
     try {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-      const response = await fetch(`${apiBaseUrl}/api/auth/signin`, {
+      const response = await fetch(`${apiBaseUrl}/auth/signin`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        // Handle successful signin
-        console.log('Signin successful:', data);
-        setMessage('Sign-in successful!');
-        // In a real application, you would save the token and user data:
-        // localStorage.setItem('token', data.token);
-        // And redirect the user or update the application state.
+        login(data);
+        window.location.href = '/';
       } else {
-        // Handle errors from the backend (e.g., "Invalid Password")
-        console.error('Signin failed:', data.message);
         setMessage(`Error: ${data.message}`);
       }
     } catch (error) {
-      // Handle network or other unexpected errors
-      console.error('Error during signin:', error);
       setMessage('An unexpected error occurred. Please try again.');
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center">Sign In to Your Account</h2>
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Email Input */}
           <div>
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-gray-400"
-            >
+            <label htmlFor="email" className="text-sm font-medium text-gray-400">
               Email address
             </label>
             <input
@@ -71,11 +56,9 @@ const Signin = () => {
               value={formData.email}
             />
           </div>
+          {/* Password Input */}
           <div>
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-400"
-            >
+            <label htmlFor="password" className="text-sm font-medium text-gray-400">
               Password
             </label>
             <input
@@ -89,6 +72,7 @@ const Signin = () => {
               value={formData.password}
             />
           </div>
+          {/* Submit Button */}
           <div>
             <button
               type="submit"
@@ -100,6 +84,16 @@ const Signin = () => {
         </form>
         {/* Display success or error messages */}
         {message && <p className="text-center text-sm text-red-400 mt-4">{message}</p>}
+        
+        {/* 5. ADD LINK TO SIGNUP */}
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-400">
+            Don't have an account?{' '}
+            <Link to="/signup" className="font-medium text-indigo-400 hover:text-indigo-500">
+              Sign Up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
