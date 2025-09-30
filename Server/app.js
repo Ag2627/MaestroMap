@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoutes);
 
 //Error Handle
-app.use(errorHandler);
+// app.use(errorHandler);
 
 
 export default app;
