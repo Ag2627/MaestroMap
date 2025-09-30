@@ -162,6 +162,7 @@ const LandingPage = ({ onLogin }) => {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-white mb-6">Ready to Unite the Circus Council?</h2>
           <p className="text-xl text-orange-100 mb-8">Join thousands of travelers who trust our multi-agent platform for perfect tour planning.</p>
+          <Link to="/signin">
           <Button 
             onClick={onLogin}
             className="bg-white text-orange-600 hover:bg-orange-50 font-bold text-lg px-8 py-4 rounded-full transition-all duration-300 hover:shadow-xl hover:scale-105"
@@ -170,6 +171,7 @@ const LandingPage = ({ onLogin }) => {
             <i className="fab fa-google mr-2"></i>
             Sign In & Start Planning
           </Button>
+          </Link>
         </div>
       </section>
 
