@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
+import VerifyEmail from './components/verifyEmail';
 import MapComponent from './components/MapComponent'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/map" element={<MapComponent />} />
     </Routes>
   );

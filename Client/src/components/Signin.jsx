@@ -331,8 +331,8 @@
 
 // export default Signin;
 
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import bg from '../assets/background.png'; // Left side image
 
@@ -340,7 +340,18 @@ const Signin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const location = useLocation(); // To read query params
   const { login } = useAuth();
+
+  // ✅ Check for email verification query param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('verified') === 'true') {
+      setMessage('Email verified successfully! You can now sign in.');
+    } else if (params.get('verified') === 'false') {
+      setMessage('Email verification failed or token expired.');
+    }
+  }, [location.search]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -372,21 +383,17 @@ const Signin = () => {
     <div className="flex min-h-screen">
       {/* Left side with background image */}
       <div
-  className="hidden md:flex w-1/2 bg-cover bg-center relative"
-  style={{ backgroundImage: `url(${bg})` }}
->
-  {/* Soft dark overlay so text is readable but image is visible */}
-  <div className="absolute inset-0 bg-black/30"></div>
-
-  {/* Text content */}
-  <div className="relative flex items-center justify-center w-full px-8">
-    <h1 className="text-4xl font-bold text-white text-center drop-shadow-lg">
-      Welcome Back!
-      <span className="block text-orange-400 mt-2">Sign in to continue</span>
-    </h1>
-  </div>
-</div>
-      
+        className="hidden md:flex w-1/2 bg-cover bg-center relative"
+        style={{ backgroundImage: `url(${bg})` }}
+      >
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="relative flex items-center justify-center w-full px-8">
+          <h1 className="text-4xl font-bold text-white text-center drop-shadow-lg">
+            Welcome Back!
+            <span className="block text-orange-400 mt-2">Sign in to continue</span>
+          </h1>
+        </div>
+      </div>
 
       {/* Right side with gradient theme */}
       <div className="flex items-center justify-center w-full md:w-1/2 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
@@ -440,7 +447,7 @@ const Signin = () => {
           </form>
 
           {/* Error / Success messages */}
-          {message && <p className="text-center text-sm text-red-500 mt-4">{message}</p>}
+          {message && <p className="text-center text-sm text-green-600 mt-4">{message}</p>}
 
           {/* Signup link */}
           <div className="text-center mt-4">
@@ -458,4 +465,3 @@ const Signin = () => {
 };
 
 export default Signin;
-
