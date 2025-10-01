@@ -370,7 +370,8 @@ const Signin = () => {
       const data = await response.json();
       if (response.ok) {
         login(data);
-        window.location.href = '/';
+        //window.location.href = '/';
+        navigate("/dashboard");
       } else {
         setMessage(`Error: ${data.message}`);
       }
