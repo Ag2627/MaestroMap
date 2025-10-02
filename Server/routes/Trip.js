@@ -5,9 +5,13 @@ import { findBestRoutes } from "../agents/Routes.js";
 import { TopPlaces } from "../agents/TopPlaces.js";
 import { OpenTripPlaces } from "../agents/OpenTripPlaces.js";
 import { GooglePlaces } from "../agents/GooglePlaces.js";
+import { TripWeather } from "../controllers/Weather.js";
+import { EventsController } from "../controllers/Event.js";
 const router = express.Router();
 
 router.post("/plan", orchestrateTrip);
+router.post("/weather",TripWeather);
+router.post("/events",EventsController);
 router.post('/find', findBestRoutes);
 router.post("/topplaces", TopPlaces);
 router.post("/opentripplaces", OpenTripPlaces);
