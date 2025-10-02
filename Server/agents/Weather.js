@@ -13,7 +13,7 @@ export default async function weatherAgent(destination, startDate, endDate) {
 
     // 1️⃣ Geocode destination
     const geoUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
-      destination+" ,IN"
+      destination
     )}&limit=1&appid=${OPENWEATHER_API_KEY}`;
     const geoRes = await axios.get(geoUrl);
 
