@@ -32,6 +32,8 @@ import RoutePlanner from './components/RoutePlanner';
 import Dashboard from './components/Dashboard';
 import OpenTripPlaces from "./components/OpenTripPlaces";
 import GooglePlaces from "./components/GooglePlaces";
+import  { WeatherPage } from "./components/WeatherPage";
+import EventPage from "./components/EventPage";
 function AppRoutes() {
   const { user, logout } = useAuth();
 
@@ -46,7 +48,8 @@ function AppRoutes() {
       <Route path="/find" element={<RoutePlanner />} />
       <Route path="/openplaces" element={<OpenTripPlaces />} />
       <Route path="/googleplaces" element={<GooglePlaces />} />
-
+      <Route path="/weatherDetails" element={<WeatherPage/>}/>
+      <Route path="eventDetails" element={<EventPage/>}/>
       <Route path="/dashboard" 
         element={user ? <Dashboard user={user} onLogout={logout} /> : <Signin />} />
     </Routes>

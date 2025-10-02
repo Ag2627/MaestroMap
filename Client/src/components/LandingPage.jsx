@@ -86,13 +86,13 @@ const LandingPage = ({ onLogin }) => {
 
           {/* Agent Cards */}
           <div className="grid md:grid-cols-4 gap-6 mt-16">
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="weather-agent-card">
+            <Link to="/weatherDetails"  className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="weather-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fas fa-cloud-sun text-white text-2xl"></i>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Sky Gazer</h3>
+              <h3 to="/weatherDetails" className="text-xl font-bold text-gray-900 mb-2">Sky Gazer</h3>
               <p className="text-gray-600">Weather forecasts and climate insights for perfect timing</p>
-            </div>
+            </Link>
 
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="maps-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -102,13 +102,13 @@ const LandingPage = ({ onLogin }) => {
               <p className="text-gray-600">Optimal routes and travel time calculations</p>
             </div>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="events-agent-card">
+            <Link to="/eventDetails" className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="events-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fas fa-calendar-star text-white text-2xl"></i>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Event Scout</h3>
               <p className="text-gray-600">Local events and entertainment opportunities</p>
-            </div>
+            </Link>
 
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="budget-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
