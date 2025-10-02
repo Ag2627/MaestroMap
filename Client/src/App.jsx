@@ -28,14 +28,10 @@ import LandingPage from './components/LandingPage';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
 import VerifyEmail from './components/verifyEmail';
-
 import RoutePlanner from './components/RoutePlanner';
-
-
-
-import MapComponent from './components/MapComponent'
 import Dashboard from './components/Dashboard';
-
+import OpenTripPlaces from "./components/OpenTripPlaces";
+import GooglePlaces from "./components/GooglePlaces";
 function AppRoutes() {
   const { user, logout } = useAuth();
 
@@ -48,7 +44,8 @@ function AppRoutes() {
       <Route path="/signin" element={<Signin />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/find" element={<RoutePlanner />} />
-      <Route path="/map" element={<MapComponent />} />
+      <Route path="/openplaces" element={<OpenTripPlaces />} />
+      <Route path="/googleplaces" element={<GooglePlaces />} />
 
       <Route path="/dashboard" 
         element={user ? <Dashboard user={user} onLogout={logout} /> : <Signin />} />

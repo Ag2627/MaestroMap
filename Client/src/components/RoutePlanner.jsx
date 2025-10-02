@@ -41,7 +41,7 @@ export default function RoutePlanner() {
   const fetchRoutes = async (origin, destination) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/routes/find`,
+        `${import.meta.env.VITE_API_BASE_URL}/trip/find`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
