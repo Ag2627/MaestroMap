@@ -6,16 +6,20 @@ const defaultCenter = { lat: 20.5937, lng: 78.9629 }; // India center
 
 // Hidden types for Google Places
 const GOOGLE_TYPES = [
-  "museums",
-  "art_gallery",
-  "cultural",
-  "park",
-  "tourist_attraction",
-  "water_park",
-  "stadium"
+  "restaurant",          // general restaurants
+  "cafe",                // casual coffee/tea places
+  "bar",                 // bars and pubs
+  "bakery",              // bakeries and pastry shops
+  "meal_delivery",       // places that deliver food
+  "meal_takeaway",       // takeaway/fast food
+  "food",                // general food locations
+  "fine_dining",         // high-end restaurants
+  "fast_food",           // quick-service restaurants
+  "pub",                 // pubs serving food & drinks
 ];
 
-export default function GooglePlaces() {
+
+export default function Hotels() {
   const [destLatLng, setDestLatLng] = useState(null);
   const [places, setPlaces] = useState([]);
   const [mapKey, setMapKey] = useState(0);
@@ -104,7 +108,7 @@ export default function GooglePlaces() {
     <div className="flex h-screen">
       {/* Sidebar */}
       <div className="w-80 p-4 border-r overflow-y-auto bg-gray-50">
-        <h2 className="text-xl font-semibold mb-2 text-gray-800">Top Places to Visit</h2>
+        <h2 className="text-xl font-semibold mb-2 text-gray-800">Top Restaurent and Hotels</h2>
 
         {destLatLng && (
           <div className="text-sm text-gray-600 mb-3">

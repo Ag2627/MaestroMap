@@ -9,18 +9,13 @@ import {
 } from "@react-google-maps/api";
 import polyline from "@mapbox/polyline";
 
-// Libraries outside component
 const libraries = ["places"];
-
-const containerStyle = {
-  width: "100%",
-  height: "100%",
-};
-
+const containerStyle = { width: "100%", height: "100%" };
 const center = { lat: 20.5937, lng: 78.9629 };
 
 export default function RoutePlanner() {
-  const [mode, setMode] = useState("DRIVE");
+  const [mode, setMode] = useState("PERSONAL");
+  const [subMode, setSubMode] = useState("4W");
   const [routes, setRoutes] = useState([]);
   const [mapKey, setMapKey] = useState(0);
   const [originLatLng, setOriginLatLng] = useState(null);
@@ -38,16 +33,72 @@ export default function RoutePlanner() {
     libraries,
   });
 
+  const getModeIcon = (subMode) => {
+    switch (subMode) {
+      case "4W":
+        return "🚗";
+      case "BIKE":
+        return "🏍";
+      case "BUS":
+        return "🚌";
+      case "SLEEPER":
+        return "🛌";
+      case "3AC":
+        return "🛫";
+      case "CAR_BOOKING":
+        return "🚖";
+      default:
+        return "❓";
+    }
+  };
+
+  const calculateCost = (distanceMeters, mode, subMode) => {
+    const distanceKm = distanceMeters / 1000;
+    let baseCost = 0;
+    let costPerKm = 0;
+    let baseFare = 0;
+    let tollCost = 0;
+
+    if (mode === "PERSONAL") {
+      if (subMode === "4W") {
+        const mileage = 12; // kmpl
+        const fuelCostPerLitre = 105; // ₹ per liter
+        tollCost = Math.max(50, Math.floor(distanceKm / 60) * 120); // ₹120 every 60km
+        baseCost = (distanceKm / mileage) * fuelCostPerLitre + tollCost;
+      } else if (subMode === "BIKE") {
+        const mileage = 45; // kmpl
+        const fuelCostPerLitre = 105; // ₹ per liter
+        baseCost = (distanceKm / mileage) * fuelCostPerLitre;
+      }
+    } else if (mode === "TRANSIT") {
+      baseFare = subMode === "BUS" ? 20 : subMode === "SLEEPER" ? 80 : 150;
+      costPerKm = subMode === "BUS" ? 2.5 : subMode === "SLEEPER" ? 0.4 : 2.1;
+      baseCost = baseFare + (distanceKm * costPerKm);
+    } else if (mode === "CAR_BOOKING") {
+      baseFare = 80;
+      costPerKm = 15;
+      tollCost = Math.max(30, Math.floor(distanceKm / 50) * 80);
+      baseCost = baseFare + (distanceKm * costPerKm) + tollCost;
+    }
+
+    // Add time-based costs for longer journeys
+    const timeMultiplier = distanceKm > 200 ? 1.1 : distanceKm > 500 ? 1.2 : 1;
+    const finalCost = baseCost * timeMultiplier;
+
+    return {
+      minCost: Math.round(finalCost * 0.85),
+      maxCost: Math.round(finalCost * 1.15),
+      baseCost: Math.round(finalCost),
+      tollCost: Math.round(tollCost),
+    };
+  };
   const fetchRoutes = async (origin, destination) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/trip/find`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ origin, destination, travelMode: mode }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/trip/find`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ origin, destination, travelMode: "DRIVE" }),
+      });
       const data = await res.json();
 
       if (data.routes && data.routes.length > 0) {
@@ -56,9 +107,7 @@ export default function RoutePlanner() {
           .slice(0, 3)
           .map((r, idx) => ({
             id: idx,
-            path: polyline
-              .decode(r.polyline.encodedPolyline)
-              .map(([lat, lng]) => ({ lat, lng })),
+            path: polyline.decode(r.polyline.encodedPolyline).map(([lat, lng]) => ({ lat, lng })),
             distance: r.distanceMeters,
             duration: r.duration,
           }));
@@ -68,9 +117,7 @@ export default function RoutePlanner() {
         const firstRoute = decodedRoutes[0];
         if (firstRoute) {
           setOriginLatLng(firstRoute.path[0]);
-          setDestinationLatLng(
-            firstRoute.path[firstRoute.path.length - 1]
-          );
+          setDestinationLatLng(firstRoute.path[firstRoute.path.length - 1]);
 
           setTimeout(() => {
             if (mapRef.current) {
@@ -124,45 +171,65 @@ export default function RoutePlanner() {
             className="border p-2 rounded w-full"
           />
         </Autocomplete>
+
         <select
           className="border p-2 rounded w-full"
           value={mode}
-          onChange={(e) => setMode(e.target.value)}
+          onChange={(e) => {
+            setMode(e.target.value);
+            if (e.target.value === "PERSONAL") setSubMode("4W");
+            else if (e.target.value === "TRANSIT") setSubMode("BUS");
+            else if (e.target.value === "CAR_BOOKING") setSubMode("CAR_BOOKING");
+          }}
         >
-          <option value="DRIVE">Drive</option>
-          <option value="WALK">Walk</option>
-          <option value="BICYCLE">Bicycle</option>
+          <option value="PERSONAL">Personal Vehicle</option>
           <option value="TRANSIT">Transit</option>
+          <option value="CAR_BOOKING">Car Booking</option>
         </select>
-        <button
-          onClick={handleFindRoutes}
-          className="bg-blue-500 text-white px-4 py-2 rounded w-full"
-        >
+
+        {/* Sub-mode selector */}
+        {mode === "PERSONAL" && (
+          <select className="border p-2 rounded w-full" value={subMode} onChange={(e) => setSubMode(e.target.value)}>
+            <option value="4W">4-Wheeler</option>
+            <option value="BIKE">Bike</option>
+          </select>
+        )}
+        {mode === "TRANSIT" && (
+          <select className="border p-2 rounded w-full" value={subMode} onChange={(e) => setSubMode(e.target.value)}>
+            <option value="BUS">Bus</option>
+            <option value="SLEEPER">Train - Sleeper</option>
+            <option value="3AC">Train - 3AC</option>
+          </select>
+        )}
+
+        <button onClick={handleFindRoutes} className="bg-blue-500 text-white px-4 py-2 rounded w-full">
           Find Routes
         </button>
 
         <div className="mt-4 flex flex-col gap-2">
-          {routes.map((r, idx) => (
-            <div
-              key={idx}
-              onClick={() => setActiveRoute(r.id)}
-              className={`p-2 border rounded shadow-sm hover:bg-gray-50 transition cursor-pointer ${
-                activeRoute === r.id ? "bg-blue-100" : ""
-              }`}
-            >
-              <p className="font-bold text-sm">Route {idx + 1}</p>
-              <p className="text-sm">
-                Distance:{" "}
-                <span className="font-semibold">
-                  {(r.distance / 1000).toFixed(2)} km
-                </span>
-                , Duration:{" "}
-                <span className="font-semibold">
-                  {Math.round(parseInt(r.duration) / 60)} mins
-                </span>
-              </p>
-            </div>
-          ))}
+          {routes.map((r, idx) => {
+            const { minCost, maxCost } = calculateCost(r.distance, mode, subMode);
+            return (
+              <div
+                key={idx}
+                onClick={() => setActiveRoute(r.id)}
+                className={`p-4 border rounded-lg shadow-lg hover:shadow-xl transition cursor-pointer bg-white ${
+                  activeRoute === r.id ? "bg-blue-50 border-blue-400" : ""
+                }`}
+              >
+                <p className="font-bold text-sm mb-1">
+                  {getModeIcon(subMode)} Route {idx + 1}
+                </p>
+                <p className="text-sm mb-1">
+                  Distance: <span className="font-semibold">{(r.distance / 1000).toFixed(2)} km</span>, Duration:{" "}
+                  <span className="font-semibold">{Math.round(parseInt(r.duration) / 60)} mins</span>
+                </p>
+                <p className="text-sm font-semibold text-green-700">
+                  Estimated Cost: ₹{minCost} - ₹{maxCost}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -194,8 +261,7 @@ export default function RoutePlanner() {
                     ? "green"
                     : "red",
                 strokeOpacity: 0.8,
-                strokeWeight:
-                  activeRoute === route.id || hoveredRoute === route.id ? 6 : 4,
+                strokeWeight: activeRoute === route.id || hoveredRoute === route.id ? 6 : 4,
               }}
               onMouseOver={(e) => {
                 setHoveredRoute(route.id);
@@ -211,18 +277,12 @@ export default function RoutePlanner() {
           {hoveredRoute !== null && hoverPos && (
             <InfoWindow position={hoverPos}>
               <div className="text-sm">
-                <p className="font-bold">Route {hoveredRoute + 1}</p>
-                <p>
-                  Distance:{" "}
-                  {(
-                    routes[hoveredRoute].distance / 1000
-                  ).toFixed(2)}{" "}
-                  km
-                </p>
-                <p>
-                  Duration:{" "}
-                  {Math.round(parseInt(routes[hoveredRoute].duration) / 60)}{" "}
-                  mins
+                <p className="font-bold">{getModeIcon(subMode)} Route {hoveredRoute + 1}</p>
+                <p>Distance: {(routes[hoveredRoute].distance / 1000).toFixed(2)} km</p>
+                <p>Duration: {Math.round(parseInt(routes[hoveredRoute].duration) / 60)} mins</p>
+                <p className="font-semibold text-green-700">
+                  Cost: ₹{calculateCost(routes[hoveredRoute].distance, mode, subMode).minCost} - ₹
+                  {calculateCost(routes[hoveredRoute].distance, mode, subMode).maxCost}
                 </p>
               </div>
             </InfoWindow>
