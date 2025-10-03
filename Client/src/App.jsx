@@ -35,6 +35,7 @@ import GooglePlaces from "./components/GooglePlaces";
 import Hotels from "./components/Hotels";
 import  { WeatherPage } from "./components/WeatherPage";
 import EventPage from "./components/EventPage";
+import TripDashboard from "./components/TripDashBoard";
 function AppRoutes() {
   const { user, logout } = useAuth();
 
@@ -50,6 +51,7 @@ function AppRoutes() {
       <Route path="/openplaces" element={<OpenTripPlaces />} />
       <Route path="/googleplaces" element={<GooglePlaces />} />
       <Route path="/hotels" element={<Hotels />} />
+      <Route path="/tripdash" element={<TripDashboard />} />
 
       <Route path="/weatherDetails" element={<WeatherPage/>}/>
       <Route path="eventDetails" element={<EventPage/>}/>
