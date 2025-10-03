@@ -1,6 +1,13 @@
 import express from "express";
+// import {
+//   searchHotels,
+// } from "../controllers/hotelController.js";
+
+import { getTopHotelPriceRange } from "../controllers/hotelController.js";
+
+//import { getHotelEstimate } from "../controllers/hotelController.js";
 import { orchestrateTrip } from "../controllers/Orchestrator.js";
-import { getFlightCost } from "../agents/Budget.js";
+import { getFlightCost } from "../agents/flightService.js";
 import { findBestRoutes } from "../agents/Routes.js";
 import { TopPlaces } from "../agents/TopPlaces.js";
 import { OpenTripPlaces } from "../agents/OpenTripPlaces.js";
@@ -16,6 +23,8 @@ router.post('/find', findBestRoutes);
 router.post("/topplaces", TopPlaces);
 router.post("/opentripplaces", OpenTripPlaces);
 router.post("/googleplaces",GooglePlaces);
+router.post("/top-hotel-price-range", getTopHotelPriceRange);
+// router.post("/search", searchHotels);
 
 
 router.post("/test-flight", async (req, res) => {
