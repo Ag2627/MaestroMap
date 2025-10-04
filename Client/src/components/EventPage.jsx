@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import axios from "axios";
 import { ExternalLink, Ticket } from "lucide-react"; // Using icons for a better UI
-import { FormPage } from "@/pages/FormPage";
+import { FormPage } from "../pages/FormPage";
 
 export default function EventPage() {
   const [eventData, setEventData] = useState(null);
@@ -26,8 +26,8 @@ export default function EventPage() {
       const formattedStartDate = format(data.startDate, "yyyy-MM-dd");
       const formattedEndDate = format(data.endDate, "yyyy-MM-dd");
 
-      const response = await axios.post(API_ENDPOINT, {
-        destination: data.destination,
+       const response = await axios.post(API_ENDPOINT, {
+        destination: tripDetails.destination,
         startDate: formattedStartDate,
         endDate: formattedEndDate,
       });

@@ -34,12 +34,12 @@ export const calculateCost = (distanceMeters, mode, subMode) => {
 
   if (mode === "PERSONAL") {
     if (subMode === "4W") {
-      const mileage = 12; // kmpl
+      const mileage = 18; // kmpl
       const fuelCostPerLitre = 105;
       tollCost = Math.max(50, Math.floor(distanceKm / 60) * 120);
       baseCost = (distanceKm / mileage) * fuelCostPerLitre + tollCost;
     } else if (subMode === "BIKE") {
-      const mileage = 45;
+      const mileage = 40;
       const fuelCostPerLitre = 105;
       baseCost = (distanceKm / mileage) * fuelCostPerLitre;
     }
