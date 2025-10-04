@@ -94,13 +94,13 @@ const LandingPage = ({ onLogin }) => {
               <p className="text-gray-600">Weather forecasts and climate insights for perfect timing</p>
             </Link>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="maps-agent-card">
+            <Link to="/findroutes" className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="maps-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i className="fas fa-map-marked-alt text-white text-2xl"></i>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Trailblazer</h3>
               <p className="text-gray-600">Optimal routes and travel time calculations</p>
-            </div>
+            </Link>
 
             <Link to="/eventDetails" className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="events-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">

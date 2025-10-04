@@ -36,6 +36,8 @@ import Hotels from "./components/Hotels";
 import  { WeatherPage } from "./components/WeatherPage";
 import EventPage from "./components/EventPage";
 import TripDashboard from "./components/TripDashBoard";
+import PlacesHotelFood from "./temporary/PlacesHotelFood";
+import ItineraryGenerator from "./temporary/itineraryGenerator";
 function AppRoutes() {
   const { user, logout } = useAuth();
 
@@ -43,11 +45,14 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/fetch" element={<PlacesHotelFood />} />
+      <Route path="/generate" element={<ItineraryGenerator />} />
+
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/find" element={<RoutePlanner />} />
+      <Route path="/findroutes" element={<RoutePlanner />} />
       <Route path="/openplaces" element={<OpenTripPlaces />} />
       <Route path="/googleplaces" element={<GooglePlaces />} />
       <Route path="/hotels" element={<Hotels />} />
