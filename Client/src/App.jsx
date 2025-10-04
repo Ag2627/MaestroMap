@@ -25,6 +25,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/authContext";
 import LandingPage from './components/LandingPage';
+//import HotelPage from "./components/HotelsPage";  
+import { HotelsFormPage } from './components/HotelsPage.jsx';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
 import VerifyEmail from './components/verifyEmail';
@@ -55,7 +57,7 @@ function AppRoutes() {
       <Route path="/findroutes" element={<RoutePlanner />} />
       <Route path="/openplaces" element={<OpenTripPlaces />} />
       <Route path="/googleplaces" element={<GooglePlaces />} />
-      <Route path="/hotels" element={<Hotels />} />
+      <Route path="/hotels" element={<HotelsFormPage />} />
       <Route path="/tripdash" element={<TripDashboard />} />
 
       <Route path="/weatherDetails" element={<WeatherPage/>}/>

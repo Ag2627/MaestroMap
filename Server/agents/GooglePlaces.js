@@ -31,7 +31,8 @@ export const GooglePlaces = async (req, res) => {
     }
 
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    const typeArray = types.split(",");
+    // const typeArray = types.split(",");
+    const typeArray = Array.isArray(types) ? types : types.split(",");
 
     let places = await getPlaces({ lat: destination.lat, lng: destination.lon, radius, types: typeArray, apiKey });
 
