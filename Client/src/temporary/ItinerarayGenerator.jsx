@@ -274,7 +274,7 @@ import { Button } from '../components/ui/button'; // Adjust path if needed
 const PLACES_TYPES = ["museum", "art_gallery", "park", "tourist_attraction", "zoo", "aquarium", "landmark"];
 const HOTELS_TYPES = ["hotel", "motel", "lodging"];
 const FOOD_TYPES = ["restaurant", "cafe", "bakery", "bar"];
-
+const libraries=["places"];
 export default function ItineraryGenerator() {
   // --- UNIFIED STATE from both components ---
   const [days, setDays] = useState(3);
@@ -290,7 +290,7 @@ export default function ItineraryGenerator() {
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
+    libraries,
   });
 
   // --- HELPER FUNCTION to fetch nearby places ---
@@ -455,7 +455,7 @@ export default function ItineraryGenerator() {
   <div className="flex flex-col items-center w-full min-h-screen p-4 md:p-8 bg-gradient-to-br from-orange-50 via-white to-orange-100">
   <div className="w-full max-w-6xl space-y-8">
     <div className="bg-white/90 backdrop-blur-sm border border-orange-200 shadow-lg rounded-2xl p-8 mb-6">
-
+        
             {/* Header Section */}
             <div className="text-center space-y-2 mb-8">
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-orange-700 bg-clip-text text-transparent">

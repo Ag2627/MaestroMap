@@ -10,7 +10,7 @@ import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 // 2. REMOVED: Backend URL constants are no longer necessary.
 // const BACKEND_URL = "http://localhost:5000";
@@ -226,6 +226,20 @@ const Dashboard = ({ user, onLogout }) => {
           </Button>
         </div>
 
+
+        
+        <div className="mb-8">
+          <Link to="/generate">
+            <Button
+              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-8 py-3 rounded-full text-lg"
+              data-testid="generate-trip-btn"
+            >
+              <i className="fas fa-magic mr-2"></i>
+              Plan new Trip
+            </Button>
+          </Link>
+        </div>
+
         {/* Trip Planning Form */}
         {showPlanForm && (
           <Card className="mb-8 bg-white/90 backdrop-blur-sm" data-testid="trip-planning-form">
@@ -248,6 +262,7 @@ const Dashboard = ({ user, onLogout }) => {
                   data-testid="destination-input"
                 />
               </div>
+              
 
               {/* Dates */}
               <div className="grid md:grid-cols-2 gap-4">
