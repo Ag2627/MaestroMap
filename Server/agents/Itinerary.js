@@ -159,7 +159,7 @@ Here are the lists of places to use for building the itinerary:
 
 Please follow these instructions carefully:
 
-1.  Select one hotel from the 'Highly-Rated Hotels' list for the entire duration of the stay.
+1.  Select any nice hotel from the 'Highly-Rated Hotels' list for the entire duration of the stay.
 2.  The final output **MUST** be a valid JSON array. Each object in the array represents a day.
 3.  For each day, populate the JSON object with the exact structure and keys as specified below.
 4.  Group attractions that are geographically close to each other to minimize travel time.

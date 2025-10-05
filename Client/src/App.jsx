@@ -21,7 +21,7 @@
 // }
 
 // export default App;
-
+import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/authContext";
 import LandingPage from './components/LandingPage';
@@ -39,7 +39,9 @@ import  { WeatherPage } from "./components/WeatherPage";
 import EventPage from "./components/EventPage";
 import TripDashboard from "./components/TripDashBoard";
 import PlacesHotelFood from "./temporary/PlacesHotelFood";
-import ItineraryGenerator from "./temporary/itineraryGenerator";
+import ItineraryGenerator from "./temporary/ItinerarayGenerator";
+import MyTrips from "./temporary/MyTrips";
+import TripDetails from "./temporary/TripDetails";
 function AppRoutes() {
   const { user, logout } = useAuth();
 
@@ -49,7 +51,8 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/fetch" element={<PlacesHotelFood />} />
       <Route path="/generate" element={<ItineraryGenerator />} />
-
+      <Route path="/my-trips" element={<MyTrips />} />
+      <Route path="/my-trips/:tripId" element={<TripDetails />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/signin" element={<Signin />} />
@@ -70,10 +73,12 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      
-        <AppRoutes />
-      
+   <AuthProvider>
+      <Toaster 
+        position="top-center" 
+        reverseOrder={false}
+      />
+      <AppRoutes />
     </AuthProvider>
   );
 }

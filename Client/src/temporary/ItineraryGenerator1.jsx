@@ -72,13 +72,17 @@ export default function ItineraryGenerator() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Number of Days</label>
-              <input
-                type="number"
+              <select
                 value={days}
                 onChange={(e) => setDays(Number(e.target.value))}
-                min="1"
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              >
+                <option value="1">1 Day</option>
+                <option value="2">2 Days</option>
+                <option value="3">3 Days</option>
+                <option value="4">4 Days</option>
+                <option value="5">5 Days</option>
+              </select>
             </div>
           </div>
           
