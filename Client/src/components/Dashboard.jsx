@@ -132,10 +132,6 @@ const Dashboard = ({ user, onLogout }) => {
       
       setPlanningTrip(false);
       setShowPlanForm(false); // Hide the form after submission
-      // Optional: Reset form fields
-      // setDestination('');
-      // setStartDate(null);
-      // setEndDate(null);
     }, 2000); // 2-second delay
   };
 

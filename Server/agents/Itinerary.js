@@ -24,50 +24,84 @@ async function getPlaces({ lat, lng, radius, types, apiKey }) {
 /**
  * 🔹 Sorts an array of places by rating or popularity.
  */
-function sortPlaces(places, sortBy) {
-  if (sortBy === "rating") return places.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-  if (sortBy === "popularity") return places.sort((a, b) => (b.user_ratings_total || 0) - (a.user_ratings_total || 0));
-  return places;
+function sortPlaces(places, sortType) {
+  if (sortType === "popularity") {
+    return places.sort((a, b) => (b.user_ratings_total || 0) - (a.user_ratings_total || 0));
+  }
+
+  if (sortType === "rating") {
+    return places.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  }
+
+  // 🧠 Default “best” combined sort: weighted score = rating * log(reviews + 1)
+  return places.sort((a, b) => {
+    const scoreA = (a.rating || 0) * Math.log((a.user_ratings_total || 0) + 1);
+    const scoreB = (b.rating || 0) * Math.log((b.user_ratings_total || 0) + 1);
+    return scoreB - scoreA;
+  });
 }
+
 
 /**
  * 🔹 A reusable function to fetch, process, and format places.
  * This is the refactored core logic from your original controller.
  */
-async function fetchAndProcessPlaces({ lat, lon, radius, types, sort, limit }) {
-    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-    const typeArray = types.split(",");
+async function fetchAndProcessPlaces({ lat, lon, radius, types, sort = "combined", limit = 50 }) {
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  const typeArray = types.split(",");
 
-    let places = await getPlaces({ lat, lng: lon, radius, types: typeArray, apiKey });
+  let places = await getPlaces({ lat, lng: lon, radius, types: typeArray, apiKey });
 
-    // Filter out places with very few reviews before sorting
-    let filteredPlaces = places.filter(p => (p.user_ratings_total || 0) >= 20);
+  // 🚫 Filter out irrelevant or low-quality places
+  const bannedKeywords = [
+    "bank",
+    "atm",
+    "school",
+    "hospital",
+    "pharmacy",
+    "university",
+    "office",
+    "store",
+    "supermarket",
+    "government",
+    "insurance",
+    "clinic",
+  ];
 
-    // Sort and limit the results
-    let processedPlaces = sortPlaces(filteredPlaces, sort).slice(0, Number(limit));
+  let filteredPlaces = places
+    .filter(
+      (p) =>
+        (p.user_ratings_total || 0) >= 20 && // must have some reviews
+        !bannedKeywords.some((kw) =>
+          p.name?.toLowerCase().includes(kw) ||
+          p.vicinity?.toLowerCase().includes(kw)
+        )
+    );
 
-    // Format the data
-    const formatted = processedPlaces.map(p => ({
-        name: p.name,
-        rating: p.rating || "N/A",
-        reviews: p.user_ratings_total || 0,
-        address: p.vicinity || "",
-        location: p.geometry?.location || {},
-        // The 'photo' property has been removed to avoid fetching images.
-    }));
+  // 🧠 Sort intelligently
+  const processedPlaces = sortPlaces(filteredPlaces, sort).slice(0, Number(limit));
 
-    // Remove duplicates based on a unique key (name + address)
-    const uniquePlaces = [];
-    const seen = new Set();
-    for (const p of formatted) {
-      const key = `${p.name}-${p.address}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        uniquePlaces.push(p);
-      }
+  // 🎯 Format clean data
+  const formatted = processedPlaces.map((p) => ({
+    name: p.name,
+    rating: p.rating || "N/A",
+    reviews: p.user_ratings_total || 0,
+    address: p.vicinity || "",
+    location: p.geometry?.location || {},
+  }));
+
+  // 🧹 Remove duplicates
+  const uniquePlaces = [];
+  const seen = new Set();
+  for (const p of formatted) {
+    const key = `${p.name}-${p.address}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniquePlaces.push(p);
     }
-    
-    return uniquePlaces;
+  }
+
+  return uniquePlaces;
 }
 
 
@@ -76,9 +110,8 @@ async function fetchAndProcessPlaces({ lat, lon, radius, types, sort, limit }) {
  */
 async function callGenerativeAI(prompt) {
     const geminiApiKey = process.env.GEMINI_API_KEY;
-    // NOTE: We are using 'gemini-pro' which is a stable alias.
-    // The version is 'v1'.
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+
+    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
 
     try {
         const response = await axios.post(url, {
@@ -139,10 +172,31 @@ export const generateItinerary = async (req, res) => {
 
         // 1. Fetch Top Places, Hotels, and Restaurants in Parallel
         const [topAttractions, topHotels, topRestaurants] = await Promise.all([
-            fetchAndProcessPlaces({ lat: destination.lat, lon: destination.lng, radius, types: "tourist_attraction,zoo,art_gallery,temple,landmark", sort: "popularity", limit: 20 }),
-            fetchAndProcessPlaces({ lat: destination.lat, lon: destination.lng, radius, types: "hotel,motel,lodging", sort: "rating", limit: 5 }),
-            fetchAndProcessPlaces({ lat: destination.lat, lon: destination.lng, radius, types: "restaurant,cafe,bar", sort: "rating", limit: 20 }),
-        ]);
+  fetchAndProcessPlaces({
+    lat: destination.lat,
+    lon: destination.lng,
+    radius,
+    types: "tourist_attraction,zoo,art_gallery,temple,landmark,park,museum",
+    sort: "combined",
+    limit: 50,
+  }),
+  fetchAndProcessPlaces({
+    lat: destination.lat,
+    lon: destination.lng,
+    radius,
+    types: "hotel,motel,lodging,resort,guest_house",
+    sort: "combined",
+    limit: 20,
+  }),
+  fetchAndProcessPlaces({
+    lat: destination.lat,
+    lon: destination.lng,
+    radius,
+    types: "restaurant,cafe,bar,bakery",
+    sort: "combined",
+    limit: 50,
+  }),
+]);
 
         if (topAttractions.length === 0) {
             return res.status(404).json({ error: `Could not find enough attractions in ${destination.name} to generate a plan. Try a larger city or radius.` });
@@ -159,11 +213,11 @@ Here are the lists of places to use for building the itinerary:
 
 Please follow these instructions carefully:
 
-1.  Select any nice hotel from the 'Highly-Rated Hotels' list for the entire duration of the stay.
+1.  Select any one hotel from the 'Highly-Rated Hotels' list for the entire duration of the stay (It should be a hotel).
 2.  The final output **MUST** be a valid JSON array. Each object in the array represents a day.
 3.  For each day, populate the JSON object with the exact structure and keys as specified below.
-4.  Group attractions that are geographically close to each other to minimize travel time.
-5.  Provide a brief, one-sentence engaging description for each attraction.
+4.  Group attractions that are geographically close to each other and you feel having are good travelling places.
+5.  Provide a brief, 2-3 line engaging description for each attraction.
 6.  Assign a suitable restaurant from the provided list for breakfast, lunch, and dinner each day.
 7.  Do not include any introductory text, closing remarks, or any other text outside of the JSON array. The response must start with '[' and end with ']'.
 
