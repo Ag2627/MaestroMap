@@ -47,7 +47,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/fetch" element={<PlacesHotelFood />} />
+      <Route path="/placeshotels" element={<PlacesHotelFood />} />
       <Route path="/generate" element={<ItineraryGenerator />} />
       <Route path="/my-trips" element={<MyTrips />} />
       <Route path="/my-trips/:tripId" element={<TripDetails />} />

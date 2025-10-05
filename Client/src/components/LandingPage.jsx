@@ -110,13 +110,13 @@ const LandingPage = ({ onLogin }) => {
               <p className="text-gray-600">Local events and entertainment opportunities</p>
             </Link>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="budget-agent-card">
+            <Link to='/placeshotels' className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="budget-agent-card">
               <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-coins text-white text-2xl"></i>
+                <i className="fas fa-map-marked-alt text-white text-2xl"></i>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Quartermaster</h3>
-              <p className="text-gray-600">Budget optimization and cost breakdowns</p>
-            </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Destination Explorer</h3>
+                  <p className="text-gray-600">Find top-rated places and hotels for your trip</p>
+            </Link>
           </div>
         </div>
       </section>
