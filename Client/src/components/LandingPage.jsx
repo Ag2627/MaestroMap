@@ -174,7 +174,7 @@ const LandingPage = ({ onLogin }) => {
           data-testid="cta-login-btn"
         >
           <i className="fab fa-google mr-2"></i>
-          Sign In & Start Planning
+          {user ? "Start a Trip" : "Sign In & Start Planning"}
         </Button>
 
         </div>
