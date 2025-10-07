@@ -20,6 +20,7 @@ import ItineraryGenerator from "./temporary/ItinerarayGenerator";
 import MyTrips from "./temporary/MyTrips";
 import TripDetails from "./temporary/TripDetails";
 import AppLayout from './pages/AppLayout';
+import CostEstimator from './components/CostEstimator';
 function AppRoutes() {
   const { user, logout } = useAuth();
 
@@ -30,6 +31,7 @@ function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
+      
       <Route path="/verify-email" element={<VerifyEmail />} />
 
       {/* Routes with home button */}
@@ -45,6 +47,7 @@ function AppRoutes() {
         <Route path="/tripdash" element={<TripDashboard />} />
         <Route path="/weatherDetails" element={<WeatherPage />} />
         <Route path="/eventDetails" element={<EventPage />} />
+        <Route path="/cost" element={<CostEstimator />} />
         <Route 
           path="/dashboard" 
           element={user ? <Dashboard user={user} onLogout={logout} /> : <Signin />} 

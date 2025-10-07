@@ -1,6 +1,8 @@
 // src/components/ItineraryDisplay.js
-import { FaSun, FaMoon, FaCloudSun, FaMapPin, FaUtensils, FaBed } from 'react-icons/fa'; // Import icons
+import { FaSun, FaMoon, FaCloudSun, FaUtensils, FaBed, FaCar } from 'react-icons/fa';
 
+// Helper Component: SectionHeader (for consistent styling)
+// No changes needed here.
 const SectionHeader = ({ icon, title }) => (
   <div className="flex items-center gap-3 border-b-2 border-gray-200 pb-2 mb-4">
     <div className="text-blue-600">{icon}</div>
@@ -8,6 +10,8 @@ const SectionHeader = ({ icon, title }) => (
   </div>
 );
 
+// Helper Component: ActivityItem (to render each visit/activity)
+// No changes needed here.
 const ActivityItem = ({ name, description }) => (
   <div className="mb-4 pl-4 border-l-2 border-blue-200">
     <p className="font-semibold text-blue-800">{name}</p>
@@ -34,11 +38,20 @@ export default function ItineraryDisplay({ itinerary, destinationName }) {
       {itinerary.map((day, index) => (
         <div key={index} className="mb-10 bg-gray-50 p-6 rounded-lg shadow-inner">
           {/* DAY HEADER */}
-          <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-2">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
             <h3 className="text-3xl font-bold text-blue-700">Day {day.day_number}</h3>
-            <div className="flex items-center gap-2 text-lg text-gray-700 font-semibold p-2 bg-blue-100 rounded-md">
-              <FaBed className="text-blue-600" />
-              <span>Stay at: {day.stay_at}</span>
+            <div className="flex flex-col sm:flex-row gap-2 text-gray-700 font-semibold text-right">
+              <div className="flex items-center justify-end gap-2 p-2 bg-blue-100 rounded-md">
+                <FaBed className="text-blue-600" />
+                <span>Stay at: {day.stay_at}</span>
+              </div>
+              {/* Renders the new transport_tip from your prompts */}
+              {day.transport_tip && (
+                <div className="flex items-center justify-end gap-2 p-2 bg-green-100 rounded-md">
+                  <FaCar className="text-green-600" />
+                  <span>{day.transport_tip}</span>
+                </div>
+              )}
             </div>
           </div>
           
@@ -46,13 +59,25 @@ export default function ItineraryDisplay({ itinerary, destinationName }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left side: Activities */}
             <div className="lg:col-span-2 space-y-8">
+              
+              {/* MORNING SECTION - Handles all itinerary types */}
               <div>
                 <SectionHeader icon={<FaSun size={24} />} title="Morning Plan" />
-                {day.morning_visits.map((visit, vIndex) => <ActivityItem key={vIndex} {...visit} />)}
+                {day.morning_experience ? (
+                  day.morning_experience.map((visit, vIndex) => <ActivityItem key={vIndex} {...visit} />)
+                ) : (
+                  day.morning_visits.map((visit, vIndex) => <ActivityItem key={vIndex} {...visit} />)
+                )}
               </div>
+              
+              {/* AFTERNOON SECTION - Handles all itinerary types */}
               <div>
                 <SectionHeader icon={<FaCloudSun size={24} />} title="Afternoon Plan" />
-                {day.afternoon_visits.map((visit, vIndex) => <ActivityItem key={vIndex} {...visit} />)}
+                {day.afternoon_indulgence ? (
+                   day.afternoon_indulgence.map((visit, vIndex) => <ActivityItem key={vIndex} {...visit} />)
+                ) : (
+                   day.afternoon_visits.map((visit, vIndex) => <ActivityItem key={vIndex} {...visit} />)
+                )}
               </div>
             </div>
 
@@ -66,9 +91,22 @@ export default function ItineraryDisplay({ itinerary, destinationName }) {
                   <li><span className="font-semibold">Dinner:</span> {day.meals.dinner.name}</li>
                 </ul>
               </div>
+
+              {/* EVENING SECTION - THE MAIN FIX IS HERE */}
               <div>
                 <SectionHeader icon={<FaMoon size={24} />} title="Evening Activity" />
-                <p className="text-gray-700 pl-4">{day.evening_activity}</p>
+                <div className="pl-4">
+                  {day.evening_affair ? (
+                    // 1. Renders the luxury 'evening_affair' object
+                    <ActivityItem name={day.evening_affair.name} description={day.evening_affair.description} />
+                  ) : day.evening_activity && typeof day.evening_activity === 'object' ? (
+                    // 2. Renders the standard 'evening_activity' object (for cheap/intermediate)
+                    <ActivityItem name={day.evening_activity.name} description={day.evening_activity.description} />
+                  ) : (
+                    // 3. Fallback for old data that might still be a string
+                    <p className="text-gray-700">{day.evening_activity}</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
