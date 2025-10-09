@@ -141,7 +141,7 @@ export default function CostEstimator() {
         break;
       case "TRANSIT":
         breakdown.baseFare = subMode === "BUS" ? 20 : subMode === "SLEEPER" ? 80 : 150;
-        const costPerKm = subMode === "BUS" ? 2.5 : subMode === "SLEEPER" ? 0.45 : 2.2;
+        const costPerKm = subMode === "BUS" ? 2.5 : subMode === "SLEEPER" ? 0.45 : 1.6;
         breakdown.distanceCost = Math.round(distanceKm * costPerKm);
         baseCost = breakdown.baseFare + breakdown.distanceCost;
         break;
