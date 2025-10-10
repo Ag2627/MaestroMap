@@ -183,7 +183,6 @@ export default function Dashboard({ onLogout }) {
               <FaCalculator /> Estimate Route Cost
             </button>
           </Link>
-
         </div>
 
         {/* New Adventure Form Modal */}
