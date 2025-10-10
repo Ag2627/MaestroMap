@@ -73,7 +73,7 @@ export default function RoutePlanner() {
       }
     } else if (mode === "TRANSIT") {
         baseFare = subMode === "BUS" ? 20 : (subMode === "SLEEPER" ? 80 : 150);
-        costPerKm = subMode === "BUS" ? 2.5 : (subMode === "SLEEPER" ? 0.45 : 2.2);
+        costPerKm = subMode === "BUS" ? 2.5 : (subMode === "SLEEPER" ? 0.45 : 1.6);
         baseCost = baseFare + (distanceKm * costPerKm);
     } else if (mode === "CAR_BOOKING") {
         tollCost = Math.max(30, Math.floor(distanceKm / 50) * 80);

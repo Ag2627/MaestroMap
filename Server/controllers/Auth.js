@@ -12,15 +12,33 @@ export const signup = async (req, res, next) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Email already exists" });
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // If user exists and is already verified, inform them
+      if (user.isVerified) {
+        return res.status(400).json({ message: "Email already exists and is verified. Please sign in." });
+      } else {
+        // If user exists but is not verified, resend verification email
+        const verificationToken = generateVerificationToken();
+        user.verificationToken = verificationToken;
+        user.fullname = fullname;
+        user.password = await hashPassword(password); 
+        await user.save();
+        await sendVerificationEmail(email, user.fullname, verificationToken); 
+
+        return res.status(200).json({
+          message: "User already exists but is not verified. A new verification email has been sent.",
+          user: { id: user._id, fullname: user.fullname, email: user.email },
+        });
+      }
     }
 
+    // If no existing user, create a new one
     const hashedPass = await hashPassword(password);
     const verificationToken = generateVerificationToken();
 
-    const user = await User.create({
+    user = await User.create({
       fullname,
       email,
       password: hashedPass,
@@ -95,4 +113,3 @@ export const verifyEmail = async (req, res, next) => {
     next(error);
   }
 };
-
