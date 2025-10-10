@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import toast from 'react-hot-toast';
 import { FaTrash, FaPlus, FaCalculator, FaBalanceScale } from 'react-icons/fa';
-import { MapPin, Calendar, Clock, Sparkles, Globe, TrendingUp } from 'lucide-react';
+import { MapPin, Calendar, Clock } from 'lucide-react';
 import { Button } from './ui/button'; 
 
 const LoadingSpinner = () => (
@@ -19,6 +19,11 @@ export default function Dashboard({ onLogout }) {
   const [trips, setTrips] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ origin: '', destination: '', startDate: '', endDate: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [summary, setSummary] = useState(null);
+
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -41,6 +46,21 @@ export default function Dashboard({ onLogout }) {
     };
     fetchTrips();
   }, [user]);
+
+  const computeAverages = (routes) => {
+    if (!routes || !routes.length) return { avgDistance: "N/A", avgDuration: "N/A" };
+    let totalDistance = 0, totalDuration = 0;
+    routes.forEach(r => {
+      const dist = parseFloat(r.distance.replace(" km", ""));
+      const dur = parseFloat(r.duration.replace(" min", ""));
+      if (!isNaN(dist)) totalDistance += dist;
+      if (!isNaN(dur)) totalDuration += dur;
+    });
+    return {
+      avgDistance: (totalDistance / routes.length).toFixed(1),
+      avgDuration: ((totalDuration / 60) / routes.length).toFixed(1)
+    };
+  };
 
   const performDeletion = async (tripId) => {
     setDeletingId(tripId);
@@ -165,6 +185,56 @@ export default function Dashboard({ onLogout }) {
           </Link>
 
         </div>
+
+        {/* New Adventure Form Modal */}
+        {showForm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-3xl p-8 md:p-10 w-full max-w-lg shadow-xl relative">
+              <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 font-bold text-lg">&times;</button>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Plan New Adventure</h3>
+              <form className="space-y-4" onSubmit={handleSubmitAdventure}>
+                <input type="text" name="origin" placeholder="Origin City" value={formData.origin} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required />
+                <input type="text" name="destination" placeholder="Destination City" value={formData.destination} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required />
+                <div className="flex gap-4">
+                  <input type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} className="w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required />
+                  <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChange} className="w-1/2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" required />
+                </div>
+                <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 text-white font-semibold py-3 rounded-lg hover:bg-orange-600 transition-all duration-300">
+                  {isSubmitting ? "Planning..." : "Plan Adventure"}
+                </button>
+              </form>
+
+              {/* Adventure Summary */}
+              {summary && (
+                <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg text-gray-800">
+                  <h4 className="font-semibold mb-2">Adventure Summary:</h4>
+                  <p>Estimated Cost: ₹{summary.estimatedCost}</p>
+                  <p>Weather: {summary.agents.weather?.description || "not available"}</p>
+                  <p>
+                    Events: {
+                      summary.agents.events && summary.agents.events.length
+                        ? summary.agents.events.length <= 3
+                          ? summary.agents.events.map(ev => ev.name).join(", ")
+                          : summary.agents.events.slice(0, 3).map(ev => ev.name).join(", ")
+                        : "none found"
+                    }
+                  </p>
+                  {summary.agents.map && summary.agents.map.length > 0 && (() => {
+                    const { avgDistance, avgDuration } = computeAverages(summary.agents.map);
+                    return (
+                      <>
+                        <p>Routes: {summary.agents.map.length}</p>
+                        <p>Average Distance: {avgDistance} km</p>
+                        <p>Average Duration: {avgDuration} hrs</p>
+                      </>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
 
         {/* --- NEW Prettier Trips Section --- */}
         <div className="bg-white/90 backdrop-blur-sm border-2 border-orange-200 shadow-2xl rounded-3xl p-8 md:p-10">
