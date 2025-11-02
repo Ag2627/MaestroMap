@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 node_modules
 .env
+=======
+node_modules/
+.env
+uploads/
+Server/.env
+>>>>>>> 5701e3f5d6b2858bbef984cebe94eee5b1829334
