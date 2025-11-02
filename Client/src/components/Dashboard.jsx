@@ -824,7 +824,7 @@
 // }
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { FaTrash, FaPlus, FaCalculator, FaBalanceScale } from 'react-icons/fa';
 import { MapPin, Calendar, Clock } from 'lucide-react';

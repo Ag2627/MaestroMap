@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
 import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FaMapMarkerAlt, FaCalendarAlt, FaBookOpen, FaPlaneDeparture, FaCar } from "react-icons/fa"
 import { useGoogleLogin } from "@react-oauth/google";
-import { setAccessToken, ensureTravelPlannerCalendar, insertEvent } from "../utils/googleCalendar";
+import { setAccessToken, ensureTravelPlannerCalendar, insertEvent } from "../utils/GoogleCalendar";
 
 import ItineraryDisplay from "./ItineraryDisplay"; 
 import { Button } from '../components/ui/button';

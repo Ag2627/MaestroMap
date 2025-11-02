@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import axios from 'axios';
 import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
 import { FaMapMarkerAlt, FaPlaneDeparture, FaUserFriends } from "react-icons/fa";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 // --- Components for UI ---

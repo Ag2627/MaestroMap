@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom"; // Use Link for navigation
 
 const libraries = ["places"];

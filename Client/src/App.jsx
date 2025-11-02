@@ -1,6 +1,6 @@
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/authContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import LandingPage from './components/LandingPage';
 //import HotelPage from "./components/HotelsPage";  
 import { HotelsFormPage } from './components/HotelsPage.jsx';
