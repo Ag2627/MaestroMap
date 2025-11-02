@@ -14,11 +14,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/trip", tripRoutes);
-app.use('/api/itinerary',itineryRoutes)
+app.use("/auth", authRoutes);
+app.use("/trip", tripRoutes);
+app.use('/itinerary',itineryRoutes)
 
-app.use("/api/myApi",eventRoutes);
+app.use("/myApi",eventRoutes);
 // Error Handle
 app.use(errorHandler);
 
