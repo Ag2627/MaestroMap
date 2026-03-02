@@ -10,5 +10,6 @@ connectDB();
 // app.listen(PORT, () => {
 //   console.log(`MaestroMap server running on port ${PORT}`);
 // });
+
 // console.log(process.env.MONGO_URI)
 export default app;
